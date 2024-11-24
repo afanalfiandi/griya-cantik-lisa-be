@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('serviceDetailID');
             $table->foreignId('serviceID')->constrained('service', 'serviceID')->onDelete('cascade');
             $table->string('img');
-            $table->timestamps();
         });
     }
 

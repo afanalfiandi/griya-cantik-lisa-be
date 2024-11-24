@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('paymentMethodID');
             $table->string('paymentMethodName');
             $table->string('img');
-            $table->timestamps();
         });
     }
 

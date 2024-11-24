@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('serviceCategoryId');
             $table->string('serviceCategoryName');
             $table->string('img');
-            $table->timestamps();
         });
     }
 

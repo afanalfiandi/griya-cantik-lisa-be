@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('paymentStatusID');
             $table->string('paymentStatusName');
             $table->string('description');
-            $table->timestamps();
         });
     }
 

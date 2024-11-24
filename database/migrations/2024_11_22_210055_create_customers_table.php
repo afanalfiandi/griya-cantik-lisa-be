@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('firstName');
             $table->string('lastName');
             $table->string('img');
-            $table->timestamps();
         });
     }
 

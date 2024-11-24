@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('specialistID');
             $table->string('specialistName');
             $table->string('img');
-            $table->timestamps();
         });
     }
 

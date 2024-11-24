@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('transactionNumber');
             $table->foreign('transactionNumber')->references('transactionNumber')->on('transaction')->onDelete('cascade');
             $table->foreignId('serviceID')->constrained('service', 'serviceID')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

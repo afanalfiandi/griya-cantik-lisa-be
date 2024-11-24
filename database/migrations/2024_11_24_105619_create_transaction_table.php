@@ -24,7 +24,6 @@ return new class extends Migration
             $table->date('dateFor');
             $table->string('notes');
             $table->integer('subtotal');
-            $table->timestamps();
         });
     }
 
