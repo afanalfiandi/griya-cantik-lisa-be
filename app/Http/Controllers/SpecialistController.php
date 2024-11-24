@@ -93,4 +93,24 @@ class SpecialistController extends Controller
             ], 500);
         }
     }
+
+    public function delete($specialistID)
+    {
+        try {
+            $customer = Specialist::where('specialistID', $specialistID)->first();
+
+            if (!$customer) {
+                return response()->json(['message' => 'not found'], 404);
+            }
+
+            Specialist::where('specialistID', $specialistID)->delete();
+
+            return response()->json(['message' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete customer',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
