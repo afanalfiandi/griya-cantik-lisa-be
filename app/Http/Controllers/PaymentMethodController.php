@@ -9,11 +9,11 @@ class PaymentMethodController extends Controller
 {
     public function index(): JsonResponse
     {
-        $serviceCategories = PaymentMethod::all();
+        $paymentMethod = PaymentMethod::all();
 
         return response()->json([
             'status' => 'success',
-            'data' => $serviceCategories
+            'data' => $paymentMethod
         ], 200);
     }
 }

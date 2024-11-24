@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Specialist;
+use App\Models\PaymentStatus;
 use Illuminate\Http\JsonResponse;
 
-class SpecialistController extends Controller
+class PaymentStatusController extends Controller
 {
     public function index(): JsonResponse
     {
-        $specialist = Specialist::all();
+        $paymentStatus = PaymentStatus::all();
 
         return response()->json([
             'status' => 'success',
-            'data' => $specialist
+            'data' => $paymentStatus
         ], 200);
     }
 }
