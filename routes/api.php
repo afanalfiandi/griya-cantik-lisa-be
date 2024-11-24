@@ -7,6 +7,7 @@ use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SlotController;
 use App\Http\Controllers\SpecialistController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransactionStatusController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,4 @@ Route::get('/get_payment_status', [PaymentStatusController::class, 'index']);
 Route::get('/get_specialist', [SpecialistController::class, 'index']);
 Route::get('/get_slot', [SlotController::class, 'index']);
 Route::get('/get_transaction_status', [TransactionStatusController::class, 'index']);
+Route::get('/get_transaction', [TransactionController::class, 'index']);
