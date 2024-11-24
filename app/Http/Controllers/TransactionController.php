@@ -45,9 +45,8 @@ class TransactionController extends Controller
             )
             ->get();
 
-        // Proses data untuk membentuk struktur yang diinginkan
         $groupedData = $query->groupBy('transactionNumber')->map(function ($transactions) {
-            $transaction = $transactions->first(); // Ambil transaksi pertama
+            $transaction = $transactions->first();
             $services = $transactions->map(function ($item) {
                 return [
                     'serviceID' => $item->serviceID,

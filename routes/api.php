@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentStatusController;
 use App\Http\Controllers\ServiceCategoryController;
@@ -22,3 +23,5 @@ Route::get('/get_specialist', [SpecialistController::class, 'index']);
 Route::get('/get_slot', [SlotController::class, 'index']);
 Route::get('/get_transaction_status', [TransactionStatusController::class, 'index']);
 Route::get('/get_transaction', [TransactionController::class, 'index']);
+
+Route::post('/add_customer', [CustomerController::class, 'store']);
