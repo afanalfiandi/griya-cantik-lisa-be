@@ -6,7 +6,6 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use PhpParser\Node\Stmt\TryCatch;
 
 class CustomerController extends Controller
 {
@@ -119,6 +118,26 @@ class CustomerController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'failed',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function delete($customerID)
+    {
+        try {
+            $customer = Customer::where('customerID', $customerID)->first();
+
+            if (!$customer) {
+                return response()->json(['message' => 'not found'], 404);
+            }
+
+            Customer::where('customerID', $customerID)->delete();
+
+            return response()->json(['message' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete customer',
                 'error'   => $e->getMessage(),
             ], 500);
         }
