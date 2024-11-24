@@ -23,7 +23,7 @@ Route::get('/payment_status/get', [PaymentStatusController::class, 'index']);
 Route::get('/specialist/get', [SpecialistController::class, 'index']);
 Route::post('/specialist/create', [SpecialistController::class, 'create']);
 Route::post('/specialist/update/{specialistID}', [SpecialistController::class, 'update']);
-Route::get('/specialist/delete/{specialistID}', [SpecialistController::class, 'delete']);
+Route::delete('/specialist/delete/{specialistID}', [SpecialistController::class, 'delete']);
 
 Route::get('/slot/get', [SlotController::class, 'index']);
 Route::get('/transaction_status/get', [TransactionStatusController::class, 'index']);
