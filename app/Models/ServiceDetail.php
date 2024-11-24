@@ -9,6 +9,7 @@ class ServiceDetail extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = "service_detail";
 
     public function services()

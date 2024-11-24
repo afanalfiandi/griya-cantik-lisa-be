@@ -19,7 +19,10 @@ Route::get('/service/get/{serviceID}', [ServiceController::class, 'serviceByID']
 Route::get('/service/get/category/{serviceCategoryID}', [ServiceController::class, 'serviceByCategoryID']);
 Route::get('/payment_method/get', [PaymentMethodController::class, 'index']);
 Route::get('/payment_status/get', [PaymentStatusController::class, 'index']);
+
 Route::get('/specialist/get', [SpecialistController::class, 'index']);
+Route::post('/specialist/create', [SpecialistController::class, 'create']);
+
 Route::get('/slot/get', [SlotController::class, 'index']);
 Route::get('/transaction_status/get', [TransactionStatusController::class, 'index']);
 Route::get('/transaction/get', [TransactionController::class, 'index']);

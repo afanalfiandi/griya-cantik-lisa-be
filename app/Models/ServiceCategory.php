@@ -9,6 +9,7 @@ class ServiceCategory extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = "service_category";
 
     public function services()

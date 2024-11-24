@@ -18,7 +18,7 @@ class Customer extends Model
 
     protected $hidden = ['password'];
 
-    public $timestamps = true;
+    public $timestamps = false;
 
     public function setPasswordAttribute($value)
     {

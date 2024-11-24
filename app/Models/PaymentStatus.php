@@ -9,6 +9,7 @@ class PaymentStatus extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = "payment_status";
 
     protected $fillable = [

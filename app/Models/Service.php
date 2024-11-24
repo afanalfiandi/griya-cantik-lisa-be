@@ -9,6 +9,7 @@ class Service extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = "service";
 
     protected $fillable = [
