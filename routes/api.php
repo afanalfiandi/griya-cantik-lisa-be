@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Http\Request;
@@ -11,3 +12,4 @@ Route::get('/get_service_category', [ServiceCategoryController::class, 'index'])
 Route::get('/get_service', [ServiceController::class, 'index']);
 Route::get('/get_service/id/{serviceID}', [ServiceController::class, 'serviceByID']);
 Route::get('/get_service/category/{serviceCategoryID}', [ServiceController::class, 'serviceByCategoryID']);
+Route::get('/get_payment_method', [PaymentMethodController::class, 'index']);
