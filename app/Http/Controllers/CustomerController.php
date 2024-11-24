@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use PhpParser\Node\Stmt\TryCatch;
 
 class CustomerController extends Controller
 {
@@ -40,6 +42,80 @@ class CustomerController extends Controller
             ]);
 
             return response()->json(['message' => 'success'], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'failed',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function update(Request $request, $customerID)
+    {
+        $validated = $request->validate([
+            'username'   => 'required|string|max:50',
+            'password'   => 'required|string|min:6',
+            'firstName'  => 'required|string|max:50',
+            'lastName'   => 'required|string|max:50',
+        ]);
+
+        try {
+            $customer = Customer::where('customerID', $customerID)->firstOrFail();
+
+            $customer->username = $validated['username'];
+            $customer->firstName = $validated['firstName'];
+            $customer->lastName = $validated['lastName'];
+
+            if (!empty($validated['password'])) {
+                $customer->password = Hash::make($validated['password']);
+            }
+
+            Customer::where('customerID', $customerID)
+                ->update([
+                    'username'  => $validated['username'],
+                    'firstName' => $validated['firstName'],
+                    'lastName'  => $validated['lastName'],
+                    'password'  => isset($validated['password']) ? Hash::make($validated['password']) : $customer->password,
+                ]);
+
+            return response()->json(['message' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'failed',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateImg(Request $request, $customerID)
+    {
+        try {
+            $request->validate([
+                'img' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            $customer = Customer::where('customerID', $customerID)->first();
+
+            if (!$customer) {
+                return response()->json(['message' => 'data not found'], 404);
+            }
+
+            if ($request->hasFile('img')) {
+                if ($customer->image && Storage::exists('public/images/customers/' . $customer->image)) {
+                    Storage::delete('public/images/customers/' . $customer->image);
+                }
+
+                $image = $request->file('img');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->storeAs('public/customers', $imageName);
+
+                Customer::where('customerID', $customerID)
+                    ->update([
+                        'img'  => $imageName,
+                    ]);
+
+                return response()->json(['message' => 'success', 'img' => $imageName], 200);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'failed',

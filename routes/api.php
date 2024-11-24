@@ -25,3 +25,5 @@ Route::get('/get_transaction_status', [TransactionStatusController::class, 'inde
 Route::get('/get_transaction', [TransactionController::class, 'index']);
 
 Route::post('/add_customer', [CustomerController::class, 'store']);
+Route::post('/update_customer/{customerID}', [CustomerController::class, 'update']);
+Route::post('/update_customer_img/{customerID}', [CustomerController::class, 'updateImg']);
