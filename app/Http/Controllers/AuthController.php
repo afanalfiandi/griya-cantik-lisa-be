@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -23,9 +24,9 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $customer = Customer::where('username', $request->email)->first();
+        $customer = Customer::where('username', $request->username)->first();
 
-        if ($customer && password_verify($request->password, $customer->password)) {
+        if ($customer && Hash::check($request->password, $customer->password)) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Auth success',
