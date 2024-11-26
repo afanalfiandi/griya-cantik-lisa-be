@@ -17,6 +17,8 @@ Route::get('/service_category/get', [ServiceCategoryController::class, 'index'])
 Route::get('/service/get', [ServiceController::class, 'index']);
 Route::get('/service/get/{serviceID}', [ServiceController::class, 'serviceByID']);
 Route::get('/service/get/category/{serviceCategoryID}', [ServiceController::class, 'serviceByCategoryID']);
+Route::get('/service/create', [ServiceController::class, 'create']);
+
 Route::get('/payment_method/get', [PaymentMethodController::class, 'index']);
 Route::get('/payment_status/get', [PaymentStatusController::class, 'index']);
 

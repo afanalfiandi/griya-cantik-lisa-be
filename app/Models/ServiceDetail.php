@@ -12,6 +12,11 @@ class ServiceDetail extends Model
     public $timestamps = false;
     protected $table = "service_detail";
 
+    protected $fillable = [
+        'serviceID',
+        'img',
+    ];
+
     public function services()
     {
         return $this->hasMany(Service::class, 'serviceID');

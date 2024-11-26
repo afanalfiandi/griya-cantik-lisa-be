@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
+use App\Models\ServiceDetail;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ServiceController extends Controller
@@ -21,8 +24,6 @@ class ServiceController extends Controller
                 'service.price',
                 'service.time',
                 'service_detail.img',
-                'service.created_at',
-                'service.updated_at',
                 'service_detail.serviceDetailID',
             );
 
@@ -51,8 +52,6 @@ class ServiceController extends Controller
                         'img' => $detail->img,
                     ];
                 }),
-                'created_at' => $service[0]->created_at,
-                'updated_at' => $service[0]->updated_at,
             ];
         });
 
@@ -84,5 +83,49 @@ class ServiceController extends Controller
             'status' => 'success',
             'data' => $servicesData
         ], 200);
+    }
+
+    public function create(Request $request)
+    {
+        $validatedData = $request->validate([
+            'serviceCategoryID' => 'required|integer',
+            'serviceName'       => 'required|string|max:255',
+            'description'       => 'nullable|string',
+            'price'             => 'required|numeric',
+            'time'              => 'required|string|max:255',
+            'img'               => 'nullable|array',
+            'img.*'             => 'file|image|max:2048',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $service = Service::create([
+                'serviceCategoryID' => $validatedData['serviceCategoryID'],
+                'serviceName'       => $validatedData['serviceName'],
+                'description'       => $validatedData['description'] ?? null,
+                'price'             => $validatedData['price'],
+                'time'              => $validatedData['time'],
+            ]);
+
+            if ($request->has('img')) {
+                foreach ($validatedData['img'] as $image) {
+                    $path = $image->store('images/service', 'public');
+
+                    ServiceDetail::create([
+                        'serviceID' => $service->id,
+                        'img'       => $path,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'success'], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json(['error' => 'failed', 'message' => $e->getMessage()], 500);
+        }
     }
 }

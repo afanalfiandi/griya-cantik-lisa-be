@@ -1,24 +1,19 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+namespace Database\Seeders;
 
-return new class extends Migration
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class ServiceCategorySeeder extends Seeder
 {
     /**
-     * Run the migrations.
+     * Run the database seeds.
      */
-    public function up(): void
+    public function run(): void
     {
-        Schema::create('service_category', function (Blueprint $table) {
-            $table->id('serviceCategoryId');
-            $table->string('serviceCategoryName');
-            $table->string('img');
-        });
-
-        DB::table('service_category')->insert([
+        DB::table('service_category')->insert(
             [
                 'serviceCategoryName' => 'Hair Care',
                 'img'                 => 'hair_care.png',
@@ -51,14 +46,6 @@ return new class extends Migration
                 'serviceCategoryName' => 'Body Care',
                 'img'                 => 'body_care.png',
             ],
-        ]);
+        );
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('service_category');
-    }
-};
+}

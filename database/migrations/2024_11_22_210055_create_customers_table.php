@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,6 +20,30 @@ return new class extends Migration
             $table->string('lastName');
             $table->string('img');
         });
+
+        DB::table('customers')->insert([
+            [
+                'username' => 'stefany',
+                'password' => bcrypt(123456),
+                'firstName' => 'Stefany',
+                'lastName' => 'Anggita Prameswari',
+                'img' => 'default.png',
+            ],
+            [
+                'username' => 'dev1',
+                'password' => bcrypt(123456),
+                'firstName' => 'Dev',
+                'lastName' => '1',
+                'img' => 'default.png',
+            ],
+            [
+                'username' => 'dev2',
+                'password' => bcrypt(123456),
+                'firstName' => 'Dev',
+                'lastName' => '2',
+                'img' => 'default.png',
+            ],
+        ]);
     }
 
     /**
