@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Midtrans\Snap;
 
 class TransactionController extends Controller
 {
@@ -109,5 +112,106 @@ class TransactionController extends Controller
             'status' => 'success',
             'data' => $finalResult
         ]);
+    }
+
+    public function create(Request $request)
+    {
+        $validated = $request->validate([
+            'customerID' => 'required|string',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'subtotal' => 'required|integer',
+            'slotID' => 'required|integer',
+            'paymentMethodID' => 'required|integer',
+            'specialistID' => 'required|integer',
+            'bookingDate' => 'required|string',
+            'dateFor' => 'required|string',
+            'notes' => 'required|string',
+            'service' => 'required|array',
+            'service.*' => 'integer',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $transactionNumber = 'TR' . now()->format('YmdHis');
+            $paymentStatusID = 2;
+            $transactionStatusID = 1;
+
+            $transaction = Transaction::create([
+                'transactionNumber' => $transactionNumber,
+                'customerID' => $validated['customerID'],
+                'slotID' => $validated['slotID'],
+                'paymentStatusID' => $paymentStatusID,
+                'transactionStatusID' => $transactionStatusID,
+                'paymentMethodID' => $validated['paymentMethodID'],
+                'specialistID' => $validated['specialistID'],
+                'bookingDate' => $validated['bookingDate'],
+                'dateFor' => $validated['dateFor'],
+                'notes' => $validated['notes'],
+                'subtotal' => $validated['subtotal'],
+            ]);
+
+            if ($transaction) {
+                foreach ($validated['service'] as $serviceID) {
+                    DB::table('transaction_detail')->insert([
+                        'transactionNumber' => $transactionNumber,
+                        'serviceID' => $serviceID,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            $midtransData = [
+                'payment_type' => 'bank_transfer',
+                'transaction_details' => [
+                    'order_id' => $transactionNumber,
+                    'gross_amount' => $validated['subtotal'],
+                ],
+                'bank_transfer' => [
+                    'bank' => 'bca',
+                ],
+            ];
+
+            $serverKey = env('MIDTRANS_SERVER_KEY');
+            $encodedKey = base64_encode($serverKey);
+
+            $response = Http::withHeaders([
+                'Accept' => 'application/json',
+                'Authorization' => 'Basic ' . $encodedKey,
+                'Content-Type' => 'application/json',
+            ])->post('https://api.sandbox.midtrans.com/v2/charge', $midtransData);
+
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $vaNumber = $data['va_numbers'][0]['va_number'];
+
+                DB::table('transaction')
+                    ->where('transactionNumber', $transactionNumber)
+                    ->update([
+                        'paymentStatusID' => 1,
+                        'vaNumber' => $vaNumber
+                    ]);
+
+                return response()->json([
+                    'message' => 'Transaction and payment processed successfully!',
+                    'midtrans_response' => $response->json(),
+                ], 201);
+            } else {
+                return response()->json([
+                    'message' => 'Payment processing failed.',
+                    'error' => $response->json(),
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

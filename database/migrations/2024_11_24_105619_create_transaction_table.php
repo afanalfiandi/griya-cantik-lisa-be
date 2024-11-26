@@ -19,10 +19,10 @@ return new class extends Migration
             $table->foreignId('transactionStatusID')->constrained('transaction_status', 'transactionStatusID')->onDelete('cascade');
             $table->foreignId('paymentMethodID')->constrained('payment_method', 'paymentMethodID')->onDelete('cascade');
             $table->foreignId('specialistID')->constrained('specialist', 'specialistID')->onDelete('cascade');
-            $table->string('vaNumber');
+            $table->string('vaNumber')->nullable();
             $table->dateTime('bookingDate');
             $table->date('dateFor');
-            $table->string('notes');
+            $table->string('notes')->nullable();
             $table->integer('subtotal');
         });
     }
