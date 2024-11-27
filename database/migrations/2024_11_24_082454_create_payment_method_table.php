@@ -39,7 +39,7 @@ return new class extends Migration
                 'payment_type' => 'bank_transfer',
                 'img' => 'bri.png',
             ],
-            [
+            // [
             //     'paymentMethodName' => 'Mandiri Bill Payment',
             //     'value' => 'mandiri',
             //     'payment_type' => 'echannel',
