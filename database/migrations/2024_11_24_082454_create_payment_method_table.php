@@ -40,11 +40,11 @@ return new class extends Migration
                 'img' => 'bri.png',
             ],
             [
-                'paymentMethodName' => 'Mandiri Bill Payment',
-                'value' => 'mandiri',
-                'payment_type' => 'echannel',
-                'img' => 'mandiri.png',
-            ],
+            //     'paymentMethodName' => 'Mandiri Bill Payment',
+            //     'value' => 'mandiri',
+            //     'payment_type' => 'echannel',
+            //     'img' => 'mandiri.png',
+            // ],
             [
                 'paymentMethodName' => 'Permata Virtual Account',
                 'value' => 'permata',

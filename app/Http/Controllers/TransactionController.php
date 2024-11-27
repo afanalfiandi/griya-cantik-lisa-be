@@ -146,6 +146,8 @@ class TransactionController extends Controller
                 'paymentStatusID' => $paymentStatusID,
                 'transactionStatusID' => $transactionStatusID,
                 'paymentMethodID' => $validated['paymentMethodID'],
+                'paymentType' => $validated['paymentType'],
+                'bank' => $validated['bank'],
                 'specialistID' => $validated['specialistID'],
                 'bookingDate' => $validated['bookingDate'],
                 'dateFor' => $validated['dateFor'],
@@ -165,13 +167,13 @@ class TransactionController extends Controller
             DB::commit();
 
             $midtransData = [
-                'payment_type' => 'bank_transfer',
+                'payment_type' => $validated['payment_type'],
                 'transaction_details' => [
                     'order_id' => $transactionNumber,
                     'gross_amount' => $validated['subtotal'],
                 ],
                 'bank_transfer' => [
-                    'bank' => 'bca',
+                    'bank' => $validated['bank'],
                 ],
             ];
 
