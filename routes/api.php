@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaymentMethodController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\TransactionStatusController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth', [AuthController::class, 'auth']);
+Route::post('/auth/admin', [AuthController::class, 'authAdmin']);
 Route::get('/service_category/get', [ServiceCategoryController::class, 'index']);
 Route::get('/service/get', [ServiceController::class, 'index']);
 Route::get('/service/get/{serviceID}', [ServiceController::class, 'serviceByID']);
@@ -29,7 +31,9 @@ Route::post('/specialist/update/{specialistID}', [SpecialistController::class, '
 Route::delete('/specialist/delete/{specialistID}', [SpecialistController::class, 'delete']);
 
 Route::get('/slot/get', [SlotController::class, 'index']);
+
 Route::get('/transaction_status/get', [TransactionStatusController::class, 'index']);
+
 Route::get('/transaction/get', [TransactionController::class, 'index']);
 Route::post('/transaction/create', [TransactionController::class, 'create']);
 Route::post('/transaction/handlePayment', [TransactionController::class, 'handlePayment']);
@@ -41,3 +45,5 @@ Route::delete('/customer/delete/{customerID}', [CustomerController::class, 'dele
 
 Route::post('/midtrans/process', [MidtransController::class, 'create'])->name('midtrans.process');
 Route::post('/midtrans/notification', [MidtransController::class, 'handlePayment']);
+
+Route::get('/banner/get', [BannerController::class, 'index']);

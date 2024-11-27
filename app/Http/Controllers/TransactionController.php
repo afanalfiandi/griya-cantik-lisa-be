@@ -14,7 +14,6 @@ class TransactionController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-
         $query = DB::table('transaction as tr')
             ->leftJoin('transaction_detail', 'tr.transactionNumber', '=', 'transaction_detail.transactionNumber')
             ->leftJoin('customers', 'tr.customerID', '=', 'customers.customerID')
@@ -47,6 +46,30 @@ class TransactionController extends Controller
                 'service.price',
                 'service_detail.img'
             )
+            ->when($request->has('transactionNumber'), function ($query) use ($request) {
+                $query->where('tr.transactionNumber', $request->input('transactionNumber'));
+            })
+            ->when($request->has('customerID'), function ($query) use ($request) {
+                $query->where('tr.customerID', $request->input('customerID'));
+            })
+            ->when($request->has('paymentStatusID'), function ($query) use ($request) {
+                $query->where('tr.paymentStatusID', $request->input('paymentStatusID'));
+            })
+            ->when($request->has('transactionStatusID'), function ($query) use ($request) {
+                $query->where('tr.transactionStatusID', $request->input('transactionStatusID'));
+            })
+            ->when($request->has('paymentMethodID'), function ($query) use ($request) {
+                $query->where('tr.paymentMethodID', $request->input('paymentMethodID'));
+            })
+            ->when($request->has('specialistID'), function ($query) use ($request) {
+                $query->where('tr.specialistID', $request->input('specialistID'));
+            })
+            ->when($request->has('bookingDate'), function ($query) use ($request) {
+                $query->where('tr.bookingDate', $request->input('bookingDate'));
+            })
+            ->when($request->has('dateFor'), function ($query) use ($request) {
+                $query->where('tr.dateFor', $request->input('dateFor'));
+            })
             ->get();
 
         $groupedData = $query->groupBy('transactionNumber')->map(function ($transactions) {
@@ -79,39 +102,11 @@ class TransactionController extends Controller
             ];
         });
 
-        if ($request->has('customerID')) {
-            $query->where('transaction.customerID', '=', $request->input('customerID'));
-        }
-
-        if ($request->has('paymentStatusID')) {
-            $query->where('transaction.paymentStatusID', '=', $request->input('paymentStatusID'));
-        }
-
-        if ($request->has('transactionStatusID')) {
-            $query->where('transaction.transactionStatusID', '=', $request->input('transactionStatusID'));
-        }
-
-        if ($request->has('paymentMethodID')) {
-            $query->where('transaction.paymentMethodID', '=', $request->input('paymentMethodID'));
-        }
-
-        if ($request->has('specialistID')) {
-            $query->where('transaction.specialistID', '=', $request->input('specialistID'));
-        }
-
-        if ($request->has('bookingDate')) {
-            $query->where('transaction.bookingDate', '=', $request->input('bookingDate'));
-        }
-
-        if ($request->has('dateFor')) {
-            $query->where('transaction.dateFor', '=', $request->input('dateFor'));
-        }
-
         $finalResult = $groupedData->values()->toArray();
 
         return response()->json([
             'status' => 'success',
-            'data' => $finalResult
+            'data' => $finalResult,
         ]);
     }
 
@@ -124,6 +119,8 @@ class TransactionController extends Controller
             'subtotal' => 'required|integer',
             'slotID' => 'required|integer',
             'paymentMethodID' => 'required|integer',
+            'paymentType' => 'required|string',
+            'bank' => 'required|string',
             'specialistID' => 'required|integer',
             'bookingDate' => 'required|string',
             'dateFor' => 'required|string',
@@ -167,7 +164,7 @@ class TransactionController extends Controller
             DB::commit();
 
             $midtransData = [
-                'payment_type' => $validated['payment_type'],
+                'payment_type' => $validated['paymentType'],
                 'transaction_details' => [
                     'order_id' => $transactionNumber,
                     'gross_amount' => $validated['subtotal'],
