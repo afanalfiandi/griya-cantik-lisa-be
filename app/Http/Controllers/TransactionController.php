@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Midtrans\Snap;
 
 class TransactionController extends Controller
@@ -191,7 +192,7 @@ class TransactionController extends Controller
                 DB::table('transaction')
                     ->where('transactionNumber', $transactionNumber)
                     ->update([
-                        'paymentStatusID' => 1,
+                        'paymentStatusID' => 2,
                         'vaNumber' => $vaNumber
                     ]);
 
@@ -213,5 +214,59 @@ class TransactionController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+
+    public function handlePayment(Request $request)
+    {
+
+        $payload = $request->all();
+        $serverKey = env('MIDTRANS_SERVER_KEY');
+
+        Log::info('incoming-midtrans', [
+            'payload' => $payload
+        ]);
+
+        $orderId = $payload['order_id'];
+        $statusCode = $payload['status_code'];
+        $grossAmount = $payload['gross_amount'];
+
+        $signatureKey = $payload['signature_key'];
+
+        $signature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+
+        if ($signature != $signatureKey) {
+            return response()->json([
+                'message' => 'Invalid signature',
+            ], 500);
+        }
+
+        $transactionStatus = $payload['transaction_status'];
+
+        $order = Transaction::where('transactionNumber', $orderId)->first();
+
+        if (!$order) {
+            return response()->json([
+                'message' => 'Invalid order',
+            ], 400);
+        }
+
+        if ($transactionStatus == 'settlement') {
+            DB::table('transaction')
+                ->where('transactionNumber', $orderId)
+                ->update([
+                    'paymentStatusID' => 1,
+                ]);
+        } else if ($transactionStatus == 'expired') {
+            DB::table('transaction')
+                ->where('transactionNumber', $orderId)
+                ->update([
+                    'paymentStatusID' => 3,
+                ]);
+        }
+
+        return response()->json([
+            'message' => 'success'
+        ], 200);
     }
 }

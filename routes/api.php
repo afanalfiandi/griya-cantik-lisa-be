@@ -32,6 +32,7 @@ Route::get('/slot/get', [SlotController::class, 'index']);
 Route::get('/transaction_status/get', [TransactionStatusController::class, 'index']);
 Route::get('/transaction/get', [TransactionController::class, 'index']);
 Route::post('/transaction/create', [TransactionController::class, 'create']);
+Route::post('/transaction/handlePayment', [TransactionController::class, 'handlePayment']);
 
 Route::post('/customer/create', [CustomerController::class, 'store']);
 Route::post('/customer/update/{customerID}', [CustomerController::class, 'update']);
@@ -39,4 +40,4 @@ Route::post('/customer/update/img/{customerID}', [CustomerController::class, 'up
 Route::delete('/customer/delete/{customerID}', [CustomerController::class, 'delete']);
 
 Route::post('/midtrans/process', [MidtransController::class, 'create'])->name('midtrans.process');
-Route::post('/midtrans/notification', [MidtransController::class, 'handleNotification']);
+Route::post('/midtrans/notification', [MidtransController::class, 'handlePayment']);

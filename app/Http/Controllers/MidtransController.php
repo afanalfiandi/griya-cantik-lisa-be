@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MidtransController extends Controller
 {
@@ -34,25 +35,5 @@ class MidtransController extends Controller
                 'error'   => $e->getMessage(),
             ], 500);
         }
-    }
-
-    public function handleNotification(Request $request)
-    {
-        $notification = new \Midtrans\Notification();
-
-        $transactionStatus = $notification->transaction_status;
-        $orderId = $notification->order_id;
-
-        if ($transactionStatus == 'capture') {
-            // Transaksi berhasil
-        } elseif ($transactionStatus == 'settlement') {
-            // Transaksi selesai
-        } elseif ($transactionStatus == 'pending') {
-            // Transaksi tertunda
-        } elseif ($transactionStatus == 'deny') {
-            // Transaksi ditolak
-        }
-
-        return response()->json(['message' => 'Notification handled'], 200);
     }
 }
