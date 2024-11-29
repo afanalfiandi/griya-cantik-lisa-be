@@ -47,3 +47,5 @@ Route::post('/midtrans/process', [MidtransController::class, 'create'])->name('m
 Route::post('/midtrans/notification', [MidtransController::class, 'handlePayment']);
 
 Route::get('/banner/get', [BannerController::class, 'index']);
+Route::post('/banner/create', [BannerController::class, 'create']);
+Route::delete('/banner/delete/{bannerID}', [BannerController::class, 'delete']);
