@@ -78,7 +78,7 @@ class ServiceController extends Controller
 
     public function serviceByCategoryID($serviceCategoryID): JsonResponse
     {
-        $servicesData = $this->getServicesData($serviceCategoryID);
+        $servicesData = $this->getServicesData(null, $serviceCategoryID);
         return response()->json([
             'status' => 'success',
             'data' => $servicesData
