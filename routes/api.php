@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PaymentStatusController;
@@ -49,3 +50,7 @@ Route::post('/midtrans/notification', [MidtransController::class, 'handlePayment
 Route::get('/banner/get', [BannerController::class, 'index']);
 Route::post('/banner/create', [BannerController::class, 'create']);
 Route::delete('/banner/delete/{bannerID}', [BannerController::class, 'delete']);
+
+Route::get('/favourite/get/{customerID}', [FavouriteController::class, 'index']);
+Route::post('/favourite/create', [FavouriteController::class, 'create']);
+Route::delete('/favourite/delete/{favouriteID}', [FavouriteController::class, 'delete']);

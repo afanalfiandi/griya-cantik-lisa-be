@@ -21,10 +21,6 @@ class BannerController extends Controller
 
     public function create(Request $request)
     {
-        $validatedData = $request->validate([
-            'img'             => 'file|image|max:2048',
-        ]);
-
         DB::beginTransaction();
 
         try {
