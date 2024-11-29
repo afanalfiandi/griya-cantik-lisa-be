@@ -110,11 +110,13 @@ class ServiceController extends Controller
 
             if ($request->has('img')) {
                 foreach ($validatedData['img'] as $image) {
-                    $path = $image->store('images/service', 'public');
+                    $imgName = md5(uniqid() . '-' . time()) . '.' . $image->getClientOriginalExtension();
+
+                    $image->storeAs('images/service', $imgName, 'public');
 
                     ServiceDetail::create([
                         'serviceID' => $service->id,
-                        'img'       => $path,
+                        'img'       => $imgName,
                     ]);
                 }
             }
