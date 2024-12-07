@@ -51,31 +51,25 @@ class CustomerController extends Controller
 
     public function update(Request $request, $customerID)
     {
-        $validated = $request->validate([
-            'username'   => 'required|string|max:50',
-            'password'   => 'required|string|min:6',
-            'firstName'  => 'required|string|max:50',
-            'lastName'   => 'required|string|max:50',
-        ]);
-
         try {
             $customer = Customer::where('customerID', $customerID)->firstOrFail();
 
-            $customer->username = $validated['username'];
-            $customer->firstName = $validated['firstName'];
-            $customer->lastName = $validated['lastName'];
+            $customer->username = $request->input('username', $customer->username);
+            $customer->firstName = $request->input('firstName', $customer->firstName);
+            $customer->lastName = $request->input('lastName', $customer->lastName);
 
-            if (!empty($validated['password'])) {
-                $customer->password = Hash::make($validated['password']);
+            if (!empty($request->input('password'))) {
+                $customer->password = Hash::make($request->input('password'));
             }
 
             Customer::where('customerID', $customerID)
                 ->update([
-                    'username'  => $validated['username'],
-                    'firstName' => $validated['firstName'],
-                    'lastName'  => $validated['lastName'],
-                    'password'  => isset($validated['password']) ? Hash::make($validated['password']) : $customer->password,
+                    'username'  => $request->input('username', $customer->username),
+                    'firstName' => $request->input('firstName', $customer->firstName),
+                    'lastName'  => $request->input('lastName', $customer->lastName),
+                    'password'  => !empty($request->input('password')) ? Hash::make($request->input('password')) : $customer->password,
                 ]);
+            $customer->save();
 
             return response()->json(['message' => 'success'], 200);
         } catch (\Exception $e) {
