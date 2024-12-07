@@ -66,17 +66,11 @@ class CustomerController extends Controller
             }
 
             // Simpan perubahan ke database
-
-            Customer::where('customerID', $customerID)
-                ->update([
-                    'username'  => $request->input('username', $customer->username),
-                    'firstName' => $request->input('firstName', $customer->firstName),
-                    'lastName'  => $request->input('lastName', $customer->lastName),
-                    'password'  => !empty($request->input('password')) ? Hash::make($request->input('password')) : $customer->password,
-                ]);
             $customer->save();
 
-            return response()->json(['message' => 'success'], 200);
+            $updatedCustomer = Customer::where('customerID', $customerID)->firstOrFail();
+
+            return response()->json(['message' => 'success', 'data' => $updatedCustomer], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'failed',
