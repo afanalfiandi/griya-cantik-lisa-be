@@ -52,15 +52,20 @@ class CustomerController extends Controller
     public function update(Request $request, $customerID)
     {
         try {
+            // Mencari customer berdasarkan customerID
             $customer = Customer::where('customerID', $customerID)->firstOrFail();
 
+            // Mengupdate atribut customer dengan data dari request
             $customer->username = $request->input('username', $customer->username);
             $customer->firstName = $request->input('firstName', $customer->firstName);
             $customer->lastName = $request->input('lastName', $customer->lastName);
 
+            // Jika password tidak kosong, hash password baru
             if (!empty($request->input('password'))) {
                 $customer->password = Hash::make($request->input('password'));
             }
+
+            // Simpan perubahan ke database
 
             Customer::where('customerID', $customerID)
                 ->update([
