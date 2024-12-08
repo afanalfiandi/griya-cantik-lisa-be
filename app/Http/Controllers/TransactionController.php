@@ -112,22 +112,23 @@ class TransactionController extends Controller
 
     public function create(Request $request)
     {
-        $validated = $request->validate([
-            'customerID' => 'required|string',
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'subtotal' => 'required|integer',
-            'slotID' => 'required|integer',
-            'paymentMethodID' => 'required|integer',
-            'paymentType' => 'required|string',
-            'bank' => 'required|string',
-            'specialistID' => 'required|integer',
-            'bookingDate' => 'required|string',
-            'dateFor' => 'required|string',
-            'notes' => 'required|string',
-            'service' => 'required|array',
-            'service.*' => 'integer',
-        ]);
+        $payload = $request->all();
+        // $validated = $request->validate([
+        //     'customerID' => 'required|string',
+        //     'firstName' => 'required|string',
+        //     'lastName' => 'required|string',
+        //     'subtotal' => 'required|integer',
+        //     'slotID' => 'required|integer',
+        //     'paymentMethodID' => 'required|integer',
+        //     'paymentType' => 'required|string',
+        //     'bank' => 'required|string',
+        //     'specialistID' => 'required|integer',
+        //     'bookingDate' => 'required|string',
+        //     'dateFor' => 'required|string',
+        //     'notes' => 'required|string',
+        //     'service' => 'required|array',
+        //     'service.*' => 'integer',
+        // ]);
 
         try {
             DB::beginTransaction();
@@ -138,22 +139,22 @@ class TransactionController extends Controller
 
             $transaction = Transaction::create([
                 'transactionNumber' => $transactionNumber,
-                'customerID' => $validated['customerID'],
-                'slotID' => $validated['slotID'],
+                'customerID' => $payload['customerID'],
+                'slotID' => $payload['slotID'],
                 'paymentStatusID' => $paymentStatusID,
                 'transactionStatusID' => $transactionStatusID,
-                'paymentMethodID' => $validated['paymentMethodID'],
-                'paymentType' => $validated['paymentType'],
-                'bank' => $validated['bank'],
-                'specialistID' => $validated['specialistID'],
-                'bookingDate' => $validated['bookingDate'],
-                'dateFor' => $validated['dateFor'],
-                'notes' => $validated['notes'],
-                'subtotal' => $validated['subtotal'],
+                'paymentMethodID' => $payload['paymentMethodID'],
+                'paymentType' => $payload['paymentType'],
+                'bank' => $payload['bank'],
+                'specialistID' => $payload['specialistID'],
+                'bookingDate' => $payload['bookingDate'],
+                'dateFor' => $payload['dateFor'],
+                'notes' => $payload['notes'],
+                'subtotal' => $payload['subtotal'],
             ]);
 
             if ($transaction) {
-                foreach ($validated['service'] as $serviceID) {
+                foreach ($payload['service'] as $serviceID) {
                     DB::table('transaction_detail')->insert([
                         'transactionNumber' => $transactionNumber,
                         'serviceID' => $serviceID,
@@ -164,13 +165,13 @@ class TransactionController extends Controller
             DB::commit();
 
             $midtransData = [
-                'payment_type' => $validated['paymentType'],
+                'payment_type' => $payload['paymentType'],
                 'transaction_details' => [
                     'order_id' => $transactionNumber,
-                    'gross_amount' => $validated['subtotal'],
+                    'gross_amount' => $payload['subtotal'],
                 ],
                 'bank_transfer' => [
-                    'bank' => $validated['bank'],
+                    'bank' => $payload['bank'],
                 ],
             ];
 
