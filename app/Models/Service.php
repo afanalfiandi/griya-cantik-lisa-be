@@ -30,22 +30,4 @@ class Service extends Model
     {
         return $this->hasMany(ServiceDetail::class, 'serviceID');
     }
-
-    protected static function booted()
-    {
-        static::saved(function (Service $service) {
-            $uploadedFiles = request()->file('img');
-
-            if ($uploadedFiles) {
-                foreach ($uploadedFiles as $file) {
-                    $path = $file->store('public');
-
-                    ServiceDetail::create([
-                        'service_id' => $service->id,
-                        'img' => $path,
-                    ]);
-                }
-            }
-        });
-    }
 }
