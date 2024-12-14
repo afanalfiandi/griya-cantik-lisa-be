@@ -11,6 +11,7 @@ class PaymentMethod extends Model
 
     public $timestamps = false;
     protected $table = "payment_method";
+    protected $primaryKey = 'paymentMethodID';
 
     protected $fillable = [
         'paymentMethodName',

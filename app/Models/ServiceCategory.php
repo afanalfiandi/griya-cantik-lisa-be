@@ -11,9 +11,9 @@ class ServiceCategory extends Model
 
     public $timestamps = false;
     protected $table = "service_category";
-
+    protected $primaryKey = 'serviceCategoryID';
     public function services()
     {
-        return $this->hasMany(Service::class, 'serviceCategoryID');
+        return $this->belongsTo(Service::class, 'serviceCategoryID');
     }
 }

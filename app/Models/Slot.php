@@ -11,7 +11,7 @@ class Slot extends Model
 
     public $timestamps = false;
     protected $table = "slot";
-
+    protected $primaryKey = 'slotID';
     protected $fillable = [
         'time',
         'slot'

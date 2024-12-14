@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Admin extends Model
+class Admin extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory, Notifiable;
 
     protected $table = 'admin';
-
-    protected $fillable = ['username', 'password'];
+    protected $primaryKey = 'adminID';
+    protected $fillable = ['email', 'password'];
 
     protected $guarded = [];
 
@@ -23,5 +27,15 @@ class Admin extends Model
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+
+    public function getFilamentName(): string
+    {
+        return "{$this->username}";
     }
 }

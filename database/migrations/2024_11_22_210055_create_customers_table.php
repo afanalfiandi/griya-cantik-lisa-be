@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id('customerID');
             $table->string('username');
-            $table->string('password');
+            $table->string('password')->default(bcrypt(123456));
             $table->string('firstName');
             $table->string('lastName');
             $table->string('img');

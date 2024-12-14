@@ -11,8 +11,8 @@ class Customer extends Model
     use HasFactory, Notifiable;
 
     protected $table = 'customers';
-
     protected $fillable = ['firstName', 'lastName', 'username', 'password', 'img'];
+    protected $primaryKey = 'customerID';
 
     protected $guarded = [];
 

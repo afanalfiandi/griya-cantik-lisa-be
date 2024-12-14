@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('banner', function (Blueprint $table) {
             $table->id('bannerID');
-            $table->string('img');
+            $table->string('img')->nullable();
         });
 
         DB::table('banner')->insert([

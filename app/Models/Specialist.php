@@ -11,7 +11,7 @@ class Specialist extends Model
 
     public $timestamps = false;
     protected $table = "specialist";
-
+    protected $primaryKey = 'specialistID';
     protected $fillable = [
         'specialistName',
         'img'

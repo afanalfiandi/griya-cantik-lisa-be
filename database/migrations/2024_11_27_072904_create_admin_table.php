@@ -14,13 +14,14 @@ return new class extends Migration
     {
         Schema::create('admin', function (Blueprint $table) {
             $table->id('adminID');
-            $table->string('username');
+            $table->string('email')->default('default@example.com');
             $table->string('password');
+            $table->string('remember_token', 100)->nullable();
         });
 
         DB::table('admin')->insert([
             [
-                'username' => 'admin',
+                'email' => 'admin@gmail.com',
                 'password' => bcrypt(123456),
             ],
         ]);

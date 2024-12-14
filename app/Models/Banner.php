@@ -11,6 +11,7 @@ class Banner extends Model
 
     protected $table = 'banner';
     protected $fillable = ['img'];
+    protected $primaryKey = 'bannerID';
 
     public $timestamps = false;
 }

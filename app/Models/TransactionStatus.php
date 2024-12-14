@@ -11,7 +11,7 @@ class TransactionStatus extends Model
 
     public $timestamps = false;
     protected $table = "transaction_status";
-
+    protected $primaryKey = 'transactionStatusID';
     protected $fillable = [
         'transactionStatus',
     ];
