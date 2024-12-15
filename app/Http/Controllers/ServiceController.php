@@ -130,4 +130,11 @@ class ServiceController extends Controller
             return response()->json(['error' => 'failed', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function viewImages($service_id)
+    {
+        $service = Service::with('serviceDetail')->findOrFail($service_id); // Mengambil service beserta details
+
+        return view('service.view_images', compact('service')); // Menampilkan halaman dengan gambar-gambar
+    }
 }
