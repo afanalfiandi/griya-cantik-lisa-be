@@ -93,6 +93,7 @@ class TransactionController extends Controller
                 'paymentStatus' => $transaction->paymentStatus,
                 'transactionStatus' => $transaction->transactionStatus,
                 'paymentMethod' => $transaction->paymentMethod,
+                'time' => $transaction->time,
                 'specialistName' => $transaction->specialistName,
                 'bookingDate' => $transaction->bookingDate,
                 'dateFor' => $transaction->dateFor,
