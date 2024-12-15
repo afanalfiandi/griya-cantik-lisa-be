@@ -12,6 +12,8 @@ class Transaction extends Model
     public $timestamps = false;
     protected $table = "transaction";
     protected $primaryKey = 'transactionNumber';
+    public $incrementing = false;  // Nonaktifkan auto increment
+    protected $keyType = 'string';
     protected $fillable = [
         'transactionNumber',
         'customerID',
@@ -50,5 +52,9 @@ class Transaction extends Model
     public function specialist()
     {
         return $this->belongsTo(Specialist::class, 'specialistID');
+    }
+    public function transactionDetail()
+    {
+        return $this->hasMany(TransactionDetail::class, 'transactionNumber');
     }
 }

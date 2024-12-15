@@ -7,6 +7,9 @@ use App\Filament\Resources\TransactionResource\RelationManagers;
 use App\Models\Transaction;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -40,6 +43,7 @@ class TransactionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('transactionNumber'),
                 Tables\Columns\TextColumn::make('bookingDate'),
                 Tables\Columns\TextColumn::make('dateFor')->label('Service date'),
                 Tables\Columns\TextColumn::make('customers.firstName'),
@@ -53,7 +57,9 @@ class TransactionResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -74,6 +80,41 @@ class TransactionResource extends Resource
             'index' => Pages\ListTransactions::route('/'),
             'create' => Pages\CreateTransaction::route('/create'),
             'edit' => Pages\EditTransaction::route('/{record}/edit'),
+            'view' => Pages\ViewTransaction::route('/{record}'),
         ];
+    }
+
+    public static function infoList(Infolist $infoList): Infolist
+    {
+        return $infoList
+            ->schema([
+                Section::make('Transaction Information')->schema([
+                    TextEntry::make('transactionNumber'),
+                    TextEntry::make('customers.firstName'),
+                    TextEntry::make('slot.time'),
+                    TextEntry::make('paymentStatus.paymentStatus'),
+                    TextEntry::make('transactionStatus.transactionStatus'),
+                    TextEntry::make('paymentMethod.bank'),
+                    TextEntry::make('specialist.specialistName'),
+                    TextEntry::make('vaNumber'),
+                    TextEntry::make('bookingDate'),
+                    TextEntry::make('dateFor'),
+                    TextEntry::make('notes'),
+                    TextEntry::make('subtotal'),
+                ]),
+                Section::make('Service')->schema([
+                    TextEntry::make('serviceName')
+                        ->label('Service Name')
+                        ->getStateUsing(function ($record) {
+                            // Mengambil transaksi detail pertama
+                            $transactionDetail = $record->transactionDetail->first(); // Ambil detail transaksi pertama
+
+                            // Cek jika ada detail transaksi dan layanan terkait
+                            $service = $transactionDetail ? $transactionDetail->services : null;
+                            return $service ? $service->serviceName : 'No Service'; // Menampilkan nama service atau fallback
+                        }),
+                ]),
+
+            ]);
     }
 }

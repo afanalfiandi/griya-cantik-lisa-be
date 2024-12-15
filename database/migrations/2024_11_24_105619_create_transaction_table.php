@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaction', function (Blueprint $table) {
-            $table->string('transactionNumber')->unique();
+            $table->string('transactionNumber')->primary();
             $table->foreignId('customerID')->constrained('customers', 'customerID')->onDelete('cascade');
             $table->foreignId('slotID')->constrained('slot', 'slotID')->onDelete('cascade');
             $table->foreignId('paymentStatusID')->constrained('payment_status', 'paymentStatusID')->onDelete('cascade');
