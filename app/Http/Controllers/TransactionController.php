@@ -197,9 +197,15 @@ class TransactionController extends Controller
                         'vaNumber' => $vaNumber
                     ]);
 
+                $slot = DB::table('slot')
+                    ->select('time', 'slot')
+                    ->where('slotID', $payload['slotID'])
+                    ->first();
+
                 return response()->json([
                     'message' => 'Transaction and payment processed successfully!',
                     'midtrans_response' => $response->json(),
+                    'time' => $slot->time,
                 ], 201);
             } else {
                 return response()->json([
