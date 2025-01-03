@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Snap;
+use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
@@ -41,6 +42,8 @@ class TransactionController extends Controller
                 'tr.dateFor',
                 'tr.notes',
                 'tr.subtotal',
+                'tr.vaNumber',
+                'slot.time',
                 'service.serviceID',
                 'service.serviceName',
                 'service.price',
@@ -52,28 +55,10 @@ class TransactionController extends Controller
             ->when($request->has('customerID'), function ($query) use ($request) {
                 $query->where('tr.customerID', $request->input('customerID'));
             })
-            ->when($request->has('paymentStatusID'), function ($query) use ($request) {
-                $query->where('tr.paymentStatusID', $request->input('paymentStatusID'));
-            })
-            ->when($request->has('transactionStatusID'), function ($query) use ($request) {
-                $query->where('tr.transactionStatusID', $request->input('transactionStatusID'));
-            })
-            ->when($request->has('paymentMethodID'), function ($query) use ($request) {
-                $query->where('tr.paymentMethodID', $request->input('paymentMethodID'));
-            })
-            ->when($request->has('specialistID'), function ($query) use ($request) {
-                $query->where('tr.specialistID', $request->input('specialistID'));
-            })
-            ->when($request->has('bookingDate'), function ($query) use ($request) {
-                $query->where('tr.bookingDate', $request->input('bookingDate'));
-            })
-            ->when($request->has('dateFor'), function ($query) use ($request) {
-                $query->where('tr.dateFor', $request->input('dateFor'));
-            })
             ->get();
 
         $groupedData = $query->groupBy('transactionNumber')->map(function ($transactions) {
-            $transaction = $transactions->first();
+            $transaction = $transactions->first(); // Ambil data transaksi utama
             $services = $transactions->map(function ($item) {
                 return [
                     'serviceID' => $item->serviceID,
@@ -81,7 +66,7 @@ class TransactionController extends Controller
                     'price' => $item->price,
                     'img' => $item->img,
                 ];
-            })->values();
+            })->unique('serviceID')->values();
 
             return [
                 'transactionNumber' => $transaction->transactionNumber,
@@ -99,6 +84,7 @@ class TransactionController extends Controller
                 'dateFor' => $transaction->dateFor,
                 'notes' => $transaction->notes,
                 'subtotal' => $transaction->subtotal,
+                'vaNumber' => $transaction->vaNumber,
                 'service' => $services,
             ];
         });
@@ -202,10 +188,26 @@ class TransactionController extends Controller
                     ->where('slotID', $payload['slotID'])
                     ->first();
 
+                $specialist = DB::table('specialist')
+                    ->select('specialistName')
+                    ->where('specialistID', $payload['specialistID'])
+                    ->first();
+
+                $services = DB::table('transaction')
+                    ->join('transaction_detail', 'transaction.transactionNumber', '=', 'transaction_detail.transactionNumber')
+                    ->join('service', 'transaction_detail.serviceID', '=', 'service.serviceID')
+                    ->where('transaction.transactionNumber', $transactionNumber)
+                    ->select('service.*')
+                    ->get();
+
                 return response()->json([
                     'message' => 'Transaction and payment processed successfully!',
                     'midtrans_response' => $response->json(),
                     'time' => $slot->time,
+                    'bookingDate' => Carbon::now()->format('Y-m-d'),
+                    'specialistName' => $specialist->specialistName,
+                    'service' => $services,
+                    'transactionNumber' => $transactionNumber
                 ], 201);
             } else {
                 return response()->json([
